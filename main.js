@@ -5,10 +5,13 @@ const containerTarefas = document.querySelector('.tarefas')
 const templateTarefa = containerTarefas.querySelector('template')
 
 function criarTarefa(texto) {
+    if (texto.trim() === '') return
     const tarefa = templateTarefa.content.cloneNode(true)
     const spanTitle = tarefa.querySelector('span')
+    const btnExcluir = tarefa.querySelector('button')
     spanTitle.textContent = texto
     containerTarefas.appendChild(tarefa)
+    btnExcluir.onclick = () => btnExcluir.closest('.tarefa').remove()
     
 }
 
