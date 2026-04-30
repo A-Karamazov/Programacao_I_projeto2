@@ -4,20 +4,42 @@ const inputAdicionar = containerAdicionar.querySelector('input')
 const containerTarefas = document.querySelector('.tarefas')
 const templateTarefa = containerTarefas.querySelector('template')
 
+function salvarTarefas() {
+    const nodeListTarefas = containerTarefas.querySelectorAll(':scope > .tarefa span')
+    const arrayTarefas = Array.from(nodeListTarefas).map(span => span.textContent)
+    const stringTarefas = JSON.stringify(arrayTarefas)
+    localStorage.setItem('tarefas', stringTarefas)
+}
+
+function carregarTarefas() {
+    const stringTarefas = localStorage.getItem('tarefas')
+    const arrayTarefas = JSON.parse(stringTarefas) || []
+    arrayTarefas.forEach(criarTarefa)
+}
+
 function criarTarefa(texto) {
     if (texto.trim() === '') return
     const tarefa = templateTarefa.content.cloneNode(true)
     const spanTitle = tarefa.querySelector('span')
     const btnExcluir = tarefa.querySelector('button')
     spanTitle.textContent = texto
+    btnExcluir.addEventListener('click', () => {
+        btnExcluir.closest('.tarefa').remove()
+        salvarTarefas()
+    })
     containerTarefas.appendChild(tarefa)
-    btnExcluir.onclick = () => btnExcluir.closest('.tarefa').remove()
-    
+    salvarTarefas()
 }
 
-//btnAdicionar.addEventListener('click', function() || () => {})
-btnAdicionar.onclick = function() {
+btnAdicionar.addEventListener('click', () => {
     const texto = inputAdicionar.value.trim()
     criarTarefa(texto)
     inputAdicionar.value = ''
-}
+})
+
+inputAdicionar.addEventListener('keypress', (e) => {
+    if (e.key !== 'Enter') return
+    btnAdicionar.click()
+})
+
+carregarTarefas()
